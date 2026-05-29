@@ -1,27 +1,38 @@
 #pragma once
 
-// Pinos motor (L298N)
+// ── Motor (L298N) ────────────────────────────────────────────────────────────
 #define PIN_MOTOR_IN1        4
 #define PIN_MOTOR_IN2        5
-#define PIN_MOTOR_ENA        9   // PWM — remover jumper ENA do L298N
+#define PIN_MOTOR_ENA        3   // PWM — remover jumper ENA do L298N
 
-// Pinos sensor (KY-036)
-#define PIN_SENSOR_DIGITAL   2
-#define PIN_SENSOR_ANALOG    A0
+// ── Sensor ultrassonico 1 — presença (HC-SR04) ───────────────────────────────
+#define PIN_TRIG1            6
+#define PIN_ECHO1            7
 
-// OLED (SSD1306 I2C)
-#define OLED_ADDRESS         0x3C  // se nao funcionar, tentar 0x3D
-#define OLED_WIDTH           128
-#define OLED_HEIGHT          64
-#define OLED_RESET           -1    // sem pino reset dedicado
+// ── Sensor ultrassonico 2 — tamanho (HC-SR04) ────────────────────────────────
+#define PIN_TRIG2           10
+#define PIN_ECHO2           11
 
-// Timing (ms)
-#define TEMPO_PARADA_MS       200   // parado antes de reverter
-#define TEMPO_REVERSO_MS     1500   // duracao do reverso
-#define INTERVALO_POLLING_MS   50   // frequencia de leitura do sensor
+// ── LCD 16x2 (modo 4 bits) ───────────────────────────────────────────────────
+#define LCD_RS              A0
+#define LCD_EN              A1
+#define LCD_D4              A2
+#define LCD_D5              A3
+#define LCD_D6              12
+#define LCD_D7              13
 
-// Motor
-#define VELOCIDADE_MOTOR      180   // 0-255 PWM
+// ── Thresholds ultrassonicos (cm) ────────────────────────────────────────────
+#define DIST_PRESENCA_CM    15   // sensor 1: objeto detectado se dist < este valor
+#define DIST_GRANDE_CM       8   // sensor 2: objeto "grande" se dist < este valor
 
-// Debounce
-#define DEBOUNCE_LEITURAS       3   // leituras consecutivas HIGH para confirmar metal
+// ── Timing (ms) ──────────────────────────────────────────────────────────────
+#define TEMPO_CLASSIF_MS    300  // aguarda objeto estabilizar antes de medir tamanho
+#define TEMPO_PARADA_MS     150  // pausa antes de reverter
+#define TEMPO_REVERSO_MS   1800  // duracao do reverso para desviar objeto grande
+#define INTERVALO_POLL_MS    60  // frequencia de leitura dos sensores
+
+// ── Motor ────────────────────────────────────────────────────────────────────
+#define VELOCIDADE_MOTOR    180  // 0-255 PWM
+
+// ── Debounce ─────────────────────────────────────────────────────────────────
+#define DEBOUNCE_LEITURAS     3  // leituras consecutivas para confirmar presenca

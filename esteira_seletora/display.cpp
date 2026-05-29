@@ -1,40 +1,37 @@
 #include "display.h"
 #include "config.h"
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+#include <LiquidCrystal.h>
 
-static Adafruit_SSD1306 oled(OLED_WIDTH, OLED_HEIGHT, &Wire, OLED_RESET);
+static LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
-bool displayInit() {
-    if (!oled.begin(SSD1306_SWITCHCAPVCC, OLED_ADDRESS)) {
-        return false;
-    }
-    oled.clearDisplay();
-    oled.setTextColor(SSD1306_WHITE);
-    oled.setTextSize(1);
-    oled.setCursor(10, 0);
-    oled.println("ESTEIRA SELETORA");
-    oled.display();
-    return true;
+void displayInit() {
+    lcd.begin(16, 2);
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("ESTEIRA SELETORA");
+    lcd.setCursor(0, 1);
+    lcd.print("  Iniciando...  ");
+    delay(1200);
+    lcd.clear();
 }
 
-void displayStatus(const char* status) {
-    oled.fillRect(0, 20, OLED_WIDTH, 16, SSD1306_BLACK);
-    oled.setTextSize(1);
-    oled.setCursor(0, 20);
-    oled.print("Status: ");
-    oled.println(status);
-    oled.display();
+void displayStatus(const char* linha1, const char* linha2) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(linha1);
+    lcd.setCursor(0, 1);
+    lcd.print(linha2);
 }
 
-void displayCounts(uint16_t metalCount) {
-    oled.fillRect(0, 40, OLED_WIDTH, 24, SSD1306_BLACK);
-    oled.setTextSize(1);
-    oled.setCursor(0, 40);
-    oled.print("Metal:     ");
-    oled.println(metalCount);
-    oled.setCursor(0, 52);
-    oled.println("Nao-metal: ---");
-    oled.display();
+void displayContagens(uint16_t grande, uint16_t pequeno) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Grd:");
+    lcd.print(grande);
+    lcd.setCursor(8, 0);
+    lcd.print("Peq:");
+    lcd.print(pequeno);
+    lcd.setCursor(0, 1);
+    lcd.print("Total:");
+    lcd.print(grande + pequeno);
 }
