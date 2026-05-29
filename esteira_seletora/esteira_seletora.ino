@@ -36,7 +36,7 @@ void setup() {
     displayInit();
 
     motorForward(VELOCIDADE_MOTOR);
-    displayStatus("Aguardando...", "S1:livre S2:livre");
+    displayAguardando();
     Serial.println("Sistema iniciado.");
 }
 
@@ -55,7 +55,7 @@ void loop() {
                         debounce    = 0;
                         estadoAtual = CLASSIFICANDO;
                         tempoEstado = agora;
-                        displayStatus("Objeto detectado", "Classificando...");
+                        displayClassificando();
                         Serial.println("Objeto detectado, classificando...");
                     }
                 } else {
@@ -72,17 +72,15 @@ void loop() {
                     estadoAtual = GRANDE;
                     tempoEstado = agora;
                     motorStop();
-                    displayStatus("GRANDE! Desviando", "");
-                    displayContagens(contGrande, contPequeno);
-                    Serial.print("GRANDE! Total G="); Serial.print(contGrande);
+                    displayGrande(contGrande, contPequeno);
+                    Serial.print("GRANDE! G="); Serial.print(contGrande);
                     Serial.print(" P="); Serial.println(contPequeno);
                 } else {
                     contPequeno++;
                     estadoAtual = PEQUENO;
                     tempoEstado = agora;
-                    displayStatus("Pequeno. OK.", "");
-                    displayContagens(contGrande, contPequeno);
-                    Serial.print("Pequeno. Total G="); Serial.print(contGrande);
+                    displayPequeno(contGrande, contPequeno);
+                    Serial.print("Pequeno. G="); Serial.print(contGrande);
                     Serial.print(" P="); Serial.println(contPequeno);
                 }
             }
@@ -94,7 +92,7 @@ void loop() {
                 estadoAtual = REVERTENDO;
                 tempoEstado = agora;
                 motorReverse(VELOCIDADE_MOTOR);
-                displayStatus("Revertendo...", "Bin GRANDE");
+                displayRevertendo();
                 Serial.println("Revertendo para bin grande...");
             }
             break;
@@ -106,7 +104,7 @@ void loop() {
                 if (!sensorPresenca()) {
                     estadoAtual = AGUARDANDO;
                     motorForward(VELOCIDADE_MOTOR);
-                    displayStatus("Aguardando...", "Bin PEQUENO ok");
+                    displayAguardando();
                     Serial.println("Objeto pequeno saiu. Aguardando...");
                 }
             }
@@ -117,7 +115,7 @@ void loop() {
             if (agora - tempoEstado >= TEMPO_REVERSO_MS) {
                 estadoAtual = AGUARDANDO;
                 motorForward(VELOCIDADE_MOTOR);
-                displayStatus("Aguardando...", "Bin grande ok");
+                displayAguardando();
                 Serial.println("Reverso concluido. Aguardando...");
             }
             break;
