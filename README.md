@@ -48,21 +48,14 @@ AGUARDANDO ──[S1 detecta]──► CLASSIFICANDO ──[300ms]──► GRAN
 | HC-SR04 #1 | ECHO | D7 |
 | HC-SR04 #2 | TRIG | D10 |
 | HC-SR04 #2 | ECHO | D11 |
-| LCD 16x2 | RS | A0 |
-| LCD 16x2 | EN | A1 |
-| LCD 16x2 | D4 | A2 |
-| LCD 16x2 | D5 | A3 |
-| LCD 16x2 | D6 | D12 |
-| LCD 16x2 | D7 | D13 |
-| LCD 16x2 | VSS, RW | GND |
-| LCD 16x2 | VDD | 5V |
-| LCD 16x2 | V0 (contraste) | Potenciômetro 10kΩ |
-| LCD 16x2 | A (backlight+) | 5V via resistor 220Ω |
-| LCD 16x2 | K (backlight−) | GND |
+| LCD 16x2 + módulo I2C | SDA | A4 |
+| LCD 16x2 + módulo I2C | SCL | A5 |
 
 > **L298N:** remover o jumper ENA e conectar ao **D3** para controle PWM. A fonte do motor deve fornecer a tensão nominal do motor + 2 V (queda interna da ponte H).
 
 > **HC-SR04:** alimentar com 5 V do Arduino. O pino ECHO já é compatível com os 5 V lógicos do Uno.
+
+> **LCD I2C:** o endereço padrão do módulo PCF8574 é `0x27`. Se o display não iniciar, tente `0x3F` em `config.h`. Você pode confirmar o endereço rodando um sketch de I2C scanner.
 
 ## Alimentação
 
@@ -87,7 +80,9 @@ esteira_seletora/
 
 ## Bibliotecas necessárias
 
-A biblioteca **LiquidCrystal** já vem instalada por padrão no Arduino IDE — nenhuma instalação adicional é necessária.
+Instalar via Arduino IDE → Tools → Manage Libraries:
+
+- **LiquidCrystal I2C** by Frank de Brabander (buscar `LiquidCrystal I2C`)
 
 ## Configuração
 

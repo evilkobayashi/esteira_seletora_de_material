@@ -13,13 +13,11 @@
 #define PIN_TRIG2           10
 #define PIN_ECHO2           11
 
-// ── LCD 16x2 (modo 4 bits) ───────────────────────────────────────────────────
-#define LCD_RS              A0
-#define LCD_EN              A1
-#define LCD_D4              A2
-#define LCD_D5              A3
-#define LCD_D6              12
-#define LCD_D7              13
+// ── LCD 16x2 com modulo I2C ──────────────────────────────────────────────────
+// SDA → A4, SCL → A5 (fixos no Arduino Uno, nao alterar)
+#define LCD_I2C_ADDR        0x27  // endereco I2C do modulo (tentar 0x3F se nao funcionar)
+#define LCD_COLS            16
+#define LCD_ROWS             2
 
 // ── Thresholds ultrassonicos (cm) ────────────────────────────────────────────
 #define DIST_PRESENCA_CM    15   // sensor 1: objeto detectado se dist < este valor

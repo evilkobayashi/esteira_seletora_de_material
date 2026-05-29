@@ -1,11 +1,13 @@
 #include "display.h"
 #include "config.h"
-#include <LiquidCrystal.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
-static LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
+static LiquidCrystal_I2C lcd(LCD_I2C_ADDR, LCD_COLS, LCD_ROWS);
 
 void displayInit() {
-    lcd.begin(16, 2);
+    lcd.init();
+    lcd.backlight();
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("ESTEIRA SELETORA");
