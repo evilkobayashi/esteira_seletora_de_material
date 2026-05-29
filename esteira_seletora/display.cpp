@@ -153,6 +153,7 @@ void displayPequeno(uint16_t contGrande, uint16_t contPequeno) {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.write(CH_PEQUENO);
+    lcd.print(" ");
     lcd.write(CH_OK);
     lcd.print(" PEQUENO P:");
     printPadded(contPequeno);
