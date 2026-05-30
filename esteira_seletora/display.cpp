@@ -86,11 +86,26 @@ static const uint8_t ICONE_MEDIR[8] = {
 #define CH_OK       (char)4
 #define CH_MEDIR    (char)5
 
-// ── Helper: imprime numero com zeros a esquerda (3 digitos) ──────────────────
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+// Imprime numero com zeros a esquerda (3 digitos)
 static void printPadded(uint16_t val) {
     if (val < 100) lcd.print('0');
     if (val <  10) lcd.print('0');
     lcd.print(val);
+}
+
+// Escreve uma linha inteira de 16 chars sem lcd.clear() para evitar pisca.
+// Recebe conteudo via callback para poder intercalar write() de char customizado.
+// Na pratica usamos printLinha() apenas para linhas de texto puro.
+static void printLinha(uint8_t row, const char* texto) {
+    lcd.setCursor(0, row);
+    uint8_t len = 0;
+    while (texto[len] && len < 16) {
+        lcd.print(texto[len++]);
+    }
+    // preenche o restante com espacos para apagar conteudo anterior
+    while (len++ < 16) lcd.print(' ');
 }
 
 // ── Inicializacao ────────────────────────────────────────────────────────────
@@ -104,6 +119,7 @@ void displayInit() {
     lcd.createChar(4, (uint8_t*)ICONE_OK);
     lcd.createChar(5, (uint8_t*)ICONE_MEDIR);
 
+    // lcd.clear() so e aceitavel na inicializacao (tela ainda vazia)
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("ESTEIRA SELETORA");
@@ -113,35 +129,35 @@ void displayInit() {
     lcd.clear();
 }
 
-// ── Telas de estado ──────────────────────────────────────────────────────────
+// ── Telas de estado — sem lcd.clear() para eliminar pisca ───────────────────
 
 void displayAguardando() {
-    lcd.clear();
+    // linha 0: ►► AGUARDANDO ►►
     lcd.setCursor(0, 0);
     lcd.write(CH_AVANCAR);
     lcd.write(CH_AVANCAR);
     lcd.print(" AGUARDANDO ");
     lcd.write(CH_AVANCAR);
     lcd.write(CH_AVANCAR);
-    lcd.setCursor(0, 1);
-    lcd.print("  esteira livre ");
+    // linha 1: texto fixo 16 chars
+    printLinha(1, "  esteira livre ");
 }
 
 void displayClassificando() {
-    lcd.clear();
+    // linha 0: ? CLASSIFICANDO (15 chars + 1 espaco)
     lcd.setCursor(0, 0);
     lcd.write(CH_MEDIR);
     lcd.print(" CLASSIFICANDO  ");
-    lcd.setCursor(0, 1);
-    lcd.print(" medindo tamanho");
+    printLinha(1, " medindo tamanho");
 }
 
 void displayGrande(uint16_t contGrande, uint16_t contPequeno) {
-    lcd.clear();
+    // linha 0: █ GRANDE  G:001
     lcd.setCursor(0, 0);
     lcd.write(CH_GRANDE);
     lcd.print(" GRANDE  G:");
     printPadded(contGrande);
+    // linha 1: ◄◄ desviando  P:004
     lcd.setCursor(0, 1);
     lcd.write(CH_REVERTER);
     lcd.write(CH_REVERTER);
@@ -150,13 +166,14 @@ void displayGrande(uint16_t contGrande, uint16_t contPequeno) {
 }
 
 void displayPequeno(uint16_t contGrande, uint16_t contPequeno) {
-    lcd.clear();
+    // linha 0: ▄ ✓ PEQUENO P:005
     lcd.setCursor(0, 0);
     lcd.write(CH_PEQUENO);
     lcd.print(" ");
     lcd.write(CH_OK);
     lcd.print(" PEQUENO P:");
     printPadded(contPequeno);
+    // linha 1: ►► passando   G:001
     lcd.setCursor(0, 1);
     lcd.write(CH_AVANCAR);
     lcd.write(CH_AVANCAR);
@@ -165,25 +182,25 @@ void displayPequeno(uint16_t contGrande, uint16_t contPequeno) {
 }
 
 void displayRevertendo() {
-    lcd.clear();
+    // linha 0: ◄◄ REVERTENDO
     lcd.setCursor(0, 0);
     lcd.write(CH_REVERTER);
     lcd.write(CH_REVERTER);
     lcd.print(" REVERTENDO     ");
-    lcd.setCursor(0, 1);
-    lcd.print("  >> bin GRANDE ");
+    printLinha(1, "  >> bin GRANDE ");
 }
 
 void displayContagens(uint16_t grande, uint16_t pequeno) {
-    lcd.clear();
+    // linha 0: █ Grd:001 ▄Peq:002  (16 chars)
     lcd.setCursor(0, 0);
     lcd.write(CH_GRANDE);
     lcd.print(" Grd:");
     printPadded(grande);
-    lcd.setCursor(9, 0);
+    lcd.print(" ");
     lcd.write(CH_PEQUENO);
-    lcd.print("Peq:");
+    lcd.print("P:");
     printPadded(pequeno);
+    // linha 1:    Total: 003
     lcd.setCursor(0, 1);
     lcd.print("   Total: ");
     printPadded(grande + pequeno);
